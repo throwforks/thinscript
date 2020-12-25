@@ -42,7 +42,7 @@ function compileNativeUnix() {
       '-O3',
     ];
     console.log(command.join(' '));
-    var child = child_process.spawn(command.shift(), command, {stdio: 'inherit'});
+    var child = child_process.spawn(command.shift(), command, { stdio: 'inherit' });
   } catch (e) {
     console.log('failed to build the native compiler');
   }
@@ -51,7 +51,7 @@ function compileNativeUnix() {
 function compileNativeWindows() {
   // Find all installed Visual Studio versions
   var versions = [];
-  Object.keys(process.env).forEach(function(key) {
+  Object.keys(process.env).forEach(function (key) {
     var match = /^VS(\d+)COMNTOOLS$/.exec(key);
     if (match) {
       versions.push(match[1] | 0);
@@ -59,7 +59,7 @@ function compileNativeWindows() {
   });
 
   // Try the compilers in descending order
-  versions.sort(function(a, b) {
+  versions.sort(function (a, b) {
     return b - a;
   });
   next();
@@ -72,11 +72,11 @@ function compileNativeWindows() {
 
     var version = versions.shift();
     var folder = process.env['VS' + version + 'COMNTOOLS'];
-    var child = child_process.spawn('cmd.exe', [], {cwd: __dirname, stdio: ['pipe', process.stdout, process.stderr]});
+    var child = child_process.spawn('cmd.exe', [], { cwd: __dirname, stdio: ['pipe', process.stdout, process.stderr] });
     child.stdin.write('"' + folder + '/../../VC/bin/vcvars32.bat"\n');
     child.stdin.write('cl.exe /O2 lib/thinc.c out/compiled.c /Fe"out/thinc.exe"\n');
     child.stdin.end();
-    child.on('close', function(code) {
+    child.on('close', function (code) {
       if (code !== 0 || !fs.existsSync(__dirname + '/out/thinc.exe')) {
         next();
       }
@@ -87,7 +87,7 @@ function compileNativeWindows() {
 var sourceDir = __dirname + '/src';
 var sources = [];
 
-fs.readdirSync(sourceDir).forEach(function(entry) {
+fs.readdirSync(sourceDir).forEach(function (entry) {
   if (/\.thin$/.test(entry)) {
     sources.push({
       name: entry,
@@ -115,7 +115,7 @@ console.log('wrote to "out/compiled.h"');
 fs.writeFileSync(__dirname + '/out/compiled.js', compiled.js);
 console.log('wrote to "out/compiled.js"');
 
-fs.writeFileSync(__dirname + '/out/compiled.wasm', Buffer(compiled.wasm));
+fs.writeFileSync(__dirname + '/out/compiled.wasm', Buffer.from(compiled.wasm));
 console.log('wrote to "out/compiled.wasm"');
 
 console.log('building the native compiler...');

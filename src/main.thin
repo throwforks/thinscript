@@ -6,13 +6,6 @@ extern enum Color {
   MAGENTA,
 }
 
-declare function Terminal_setColor(color: Color): void;
-declare function Terminal_write(text: string): void;
-
-declare function IO_readTextFile(path: string): string;
-declare function IO_writeTextFile(path: string, contents: string): bool;
-declare function IO_writeBinaryFile(path: string, contents: ByteArray): bool;
-
 function writeLogToTerminal(log: Log): void {
   var diagnostic = log.first;
 
